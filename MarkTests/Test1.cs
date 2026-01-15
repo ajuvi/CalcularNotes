@@ -11,7 +11,7 @@ namespace Mark.Tests
     [TestClass()]
     public class Test1
     {
-        [TestMethod()]
+        [TestMethod()] 
         [DataRow(0, "No assolit")]
         [DataRow(4, "No assolit")]
         [DataRow(6, "Satisfactori")]
