@@ -1,33 +1,23 @@
-name: CI - CalcularNotes
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # 1️⃣ Check out del codi
       - uses: actions/checkout@v4
-
-      # 2️⃣ Configurar .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
-
-      # 3️⃣ Restaurar dependències
+          dotnet-version: 9.0
       - name: Restore dependencies
         run: dotnet restore CalcularNotes.sln
-
-      # 4️⃣ Compilar
       - name: Build
         run: dotnet build CalcularNotes.sln --no-restore
-
-      # 5️⃣ Executar tests
-      - name: Run tests
-        run: dotnet test CalcularNotes.sln --no-build --verbosity normal
+      - name: Run tests and show summary
+        run: |
+          dotnet test --no-build --logger "trx;LogFileName=test_results.trx" > result.log
+          echo "==== Test Summary ===="
+          total=$(grep -o "Total: [0-9]*" result.log | awk '{print $2}')
+          passed=$(grep -o "Passed: [0-9]*" result.log | awk '{print $2}')
+          failed=$(grep -o "Failed: [0-9]*" result.log | awk '{print $2}')
+          percent=$(( passed * 100 / total ))
+          echo "Passed: $passed / $total ($percent%)"
+          echo "Failed: $failed"
