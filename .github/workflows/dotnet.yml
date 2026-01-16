@@ -27,9 +27,9 @@ jobs:
     - name: Run tests and generate TRX
       run: dotnet test CalcularNotes.sln --no-build --logger "trx;LogFileName=test_results.trx"
 
-    - name: Publish test results to GitHub Checks
-      uses: dorny/test-reporter@v2
+    - name: Publish test results with annotations
+      uses: dorny/test-reporter@v3
       with:
         name: MSTest Results
         path: '**/test_results.trx'
-        reporter: github-check
+        reporter: github-pr-annotations
