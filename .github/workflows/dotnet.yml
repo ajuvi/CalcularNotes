@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore CalcularNotes.sln
+      - name: Restore dependencies
+        run: dotnet restore CalcularNotes.sln
 
-    - name: Build
-      run: dotnet build CalcularNotes.sln --no-restore
+      - name: Build
+        run: dotnet build CalcularNotes.sln --no-restore
 
-    - name: Run tests and generate TRX
-      run: dotnet test CalcularNotes.sln --no-build --logger "trx;LogFileName=test_results.trx"
+      - name: Run tests and generate TRX
+        run: dotnet test CalcularNotes.sln --no-build --logger "trx;LogFileName=test_results.trx"
 
-    - name: Publish test results with annotations
-      uses: dorny/test-reporter@v3
-      with:
-        name: MSTest Results
-        path: '**/test_results.trx'
-        reporter: github-pr-annotations
+      - name: Publish test results
+        uses: bibipkins/dotnet-test-reporter@v1.4.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-title: 'Unit Test Results'
+          results-path: './**/*.trx'
